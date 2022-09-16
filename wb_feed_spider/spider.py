@@ -9,8 +9,13 @@ import os
 import shutil
 import sys
 import time
+from typing import Generator
 
 from tqdm import tqdm
+from weibo_spider.parser import AlbumParser, IndexParser, PhotoParser
+from weibo_spider.downloader import AvatarPictureDownloader
+from weibo_spider.user import User
+from weibo_spider.weibo import Weibo
 
 from .parser import PageParser
 from . import config_util
@@ -111,8 +116,9 @@ class Spider:
         ## initialize statistical info
         self.got_num = 0
         self.weibo_id_list = []
+        self.user_id_set = set()
 
-    def write_weibo(self, weibos):
+    def write_weibo(self, weibos: list[Weibo]):
         """Write weibos to file and/or database"""
         for writer in self.writers:
             writer.write_weibo(weibos)
@@ -124,7 +130,19 @@ class Spider:
         for writer in self.writers:
             writer.write_user(user)
 
-    def get_weibo_info(self):
+    def get_user_info(self, user_uri) -> User:
+        """获取用户信息"""
+        return IndexParser(self.cookie, user_uri).get_user()
+
+    def download_user_avatar(self, user_uri):
+        """下载用户头像"""
+        avatar_album_url = PhotoParser(self.cookie, user_uri).extract_avatar_album_url()
+        pic_urls = AlbumParser(self.cookie, avatar_album_url).extract_pic_urls()
+        AvatarPictureDownloader(
+            self._get_filepath("img"), self.file_download_timeout
+        ).handle_download(pic_urls)
+
+    def get_weibo_info(self) -> Generator[list[Weibo], None, None]:
         """Parse web request and get weibo info"""
         ## TODO: add support to parse multiple pages
         try:
@@ -152,7 +170,7 @@ class Spider:
         ## Adapted based on combination of Spider.get_one_user() and Spider.start()
         try:
             logger.info(
-                "Start fetching weibos posted after"
+                "Start fetching weibos posted after: "
                 + self.since_time.strftime("%Y-%m-%d %H:%M")
             )
 
@@ -160,7 +178,11 @@ class Spider:
             self.weibo_id_list = []  # NOTE: I have no clue what's the purpose of this
 
             for weibos in self.get_weibo_info():
-                self.write_weibo(weibos)
+                for wb in weibos:
+                    if wb.user_id not in self.user_id_set:
+                        self.write_user(self.get_user_info(wb.user_id))
+                        self.user_id_set.add(wb.user_id)
+                    self.write_weibo([wb])
                 self.got_num += len(weibos)
 
             if not self.filter:

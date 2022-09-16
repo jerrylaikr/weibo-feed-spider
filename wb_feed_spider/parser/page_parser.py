@@ -54,7 +54,8 @@ class PageParser(Parser):
                         # NOTE: debug begins
                         # TODO: change this to debug level instead of info
                         logger.info("#" * 120)
-                        logger.info(weibo)
+                        logger.info("user_id = " + weibo.user_id)
+                        logger.info(weibo.content)
                         logger.info(
                             f'publish_time = {publish_time.strftime("%Y-%m-%d %H:%M:%S")} '
                             + f'since_time = {self.since_time.strftime("%Y-%m-%d %H:%M:%S")}'
@@ -297,7 +298,16 @@ class PageParser(Parser):
 
         return video_url
 
-    def get_one_weibo(self, info):
+    def get_weibo_user_id(self, info):
+        """Get the id of the user who posted this wb"""
+        try:
+            user_id = info.xpath("./div/a[@class='nk']/@href")[0].split("/")[-1]
+        except Exception as e:
+            logger.exception(e)
+
+        return user_id
+
+    def get_one_weibo(self, info) -> Weibo:
         """获取一条微博的全部信息"""
         try:
             weibo = Weibo()
@@ -305,6 +315,7 @@ class PageParser(Parser):
             weibo.original = is_original  # 是否原创微博
             if (not self.filter) or is_original:
                 weibo.id = info.xpath("@id")[0][2:]
+                weibo.user_id = self.get_weibo_user_id(info)
                 weibo.content = self.get_weibo_content(info, is_original)  # 微博内容
                 weibo.article_url = self.get_article_url(info)  # 头条文章url
                 picture_urls = self.get_picture_urls(info, is_original)
