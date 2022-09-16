@@ -178,7 +178,7 @@ class Spider:
             self.weibo_id_list = []  # NOTE: I have no clue what's the purpose of this
 
             for weibos in self.get_weibo_info():
-                for wb in weibos:
+                for wb in tqdm(weibos):
                     if wb.user_id not in self.user_id_set:
                         self.write_user(self.get_user_info(wb.user_id))
                         self.user_id_set.add(wb.user_id)

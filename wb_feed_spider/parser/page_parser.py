@@ -55,7 +55,7 @@ class PageParser(Parser):
                         # TODO: change this to debug level instead of info
                         logger.info("#" * 120)
                         logger.info("user_id = " + weibo.user_id)
-                        logger.info(weibo.content)
+                        logger.info(weibo.id)
                         logger.info(
                             f'publish_time = {publish_time.strftime("%Y-%m-%d %H:%M:%S")} '
                             + f'since_time = {self.since_time.strftime("%Y-%m-%d %H:%M:%S")}'
@@ -63,13 +63,18 @@ class PageParser(Parser):
                         logger.info("#" * 120)
                         # NOTE: debug ends
 
-                        if publish_time < self.since_time:
+                        if publish_time < self.since_time - timedelta(minutes=1):
+                            logger.info(
+                                "Publish_time earlier than since_time, returning..."
+                            )
+                            logger.info(f"fetched {len(weibos)} wbs")
                             return weibos, weibo_id_list, False
                         logger.info(weibo)
                         logger.info("-" * 100)
                         weibos.append(weibo)
                         weibo_id_list.append(weibo.id)
 
+            logger.info(f"fetched {len(weibos)} wbs")
             return weibos, weibo_id_list, self.to_continue
 
         except Exception as e:
