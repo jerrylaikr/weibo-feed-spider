@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Author added below
+config.json
+weibo/
+weibo.db
+*.log
+*.log.*
