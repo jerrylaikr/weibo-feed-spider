@@ -2,9 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 from datetime import datetime
-from distutils.command.config import config
 import json
 import logging
+import logging.config
 import os
 import shutil
 import sys
