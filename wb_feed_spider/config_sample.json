@@ -1,0 +1,38 @@
+{
+    "refresh_interval": 300,
+    "filter": 1,
+    "write_mode": [
+        "mongo"
+    ],
+    "pic_download": 0,
+    "video_download": 0,
+    "file_download_timeout": [
+        5,
+        5,
+        10
+    ],
+    "result_dir_name": 0,
+    "cookie": "YOUR COOKIE HERE",
+    "mysql_config": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "123456",
+        "charset": "utf8mb4"
+    },
+    "kafka_config": {
+        "bootstrap-server": "127.0.0.1:9092",
+        "weibo_topics": [
+            "spider_weibo"
+        ],
+        "user_topics": [
+            "spider_weibo"
+        ]
+    },
+    "sqlite_config": "weibo.db",
+    "mongo_config": {
+        "connection_string": "mongodb://admin:password@localhost:27017/weibo",
+        "dba_name": "",
+        "dba_password": ""
+    }
+}
