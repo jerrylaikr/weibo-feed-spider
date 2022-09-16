@@ -69,7 +69,7 @@ class PageParser(Parser):
                             )
                             logger.info(f"fetched {len(weibos)} wbs")
                             return weibos, weibo_id_list, False
-                        logger.info("\n" + weibo)
+                        logger.info("\n" + str(weibo))
                         logger.info("-" * 100)
                         weibos.append(weibo)
                         weibo_id_list.append(weibo.id)
