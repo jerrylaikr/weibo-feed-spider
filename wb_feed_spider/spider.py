@@ -10,6 +10,8 @@ import shutil
 import sys
 import time
 
+from tqdm import tqdm
+
 from .parser import PageParser
 from . import config_util
 
@@ -26,6 +28,12 @@ class Spider:
 
         ## get interval between refreshes (in seconds)
         self.refresh_interval = config["refresh_interval"]
+
+        ## get DB configs
+        # self.mysql_config = config.get('mysql_config')
+        # self.sqlite_config = config.get('sqlite_config')
+        # self.kafka_config = config.get('kafka_config')
+        self.mongo_config = config.get("mongo_config")
 
         ## get writer/downloader config
         self.write_mode = config[
@@ -97,12 +105,6 @@ class Spider:
                 VideoDownloader(self._get_filepath("video"), self.file_download_timeout)
             )
 
-        ## get DB configs
-        # self.mysql_config = config.get('mysql_config')
-        # self.sqlite_config = config.get('sqlite_config')
-        # self.kafka_config = config.get('kafka_config')
-        self.mongo_config = config.get("mongo_config")
-
         ## initialize starting time
         self.since_time = datetime.now()
 
@@ -140,7 +142,10 @@ class Spider:
     def sleep(self):
         """Sleep till next refresh"""
         self.since_time = datetime.now()
-        time.sleep(self.refresh_interval)
+        logger.info(f"Reset since_time to {self.since_time}")
+        logger.info(f"Sleeping for {self.refresh_interval} seconds...")
+        for _ in tqdm(range(self.refresh_interval)):
+            time.sleep(1)
 
     def get_feed(self):
         """Start fetching weibos posted aft last refresh from my feed"""
