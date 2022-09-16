@@ -18,10 +18,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-        "lxml",
-        "requests",
-        "tqdm",
-    ],
+    install_requires=["lxml", "requests", "tqdm", "pymongo"],
     python_requires=">=3.6",
 )
