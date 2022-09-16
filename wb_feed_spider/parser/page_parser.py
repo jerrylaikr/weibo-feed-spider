@@ -51,6 +51,17 @@ class PageParser(Parser):
                             continue
                         publish_time = datetime_util.str_to_time(weibo.publish_time)
 
+                        # NOTE: debug begins
+                        # TODO: change this to debug level instead of info
+                        logger.info("#" * 120)
+                        logger.info(weibo)
+                        logger.info(
+                            f'publish_time = {publish_time.strftime("%Y-%m-%d %H:%M:%S")} '
+                            + f'since_time = {self.since_time.strftime("%Y-%m-%d %H:%M:%S")}'
+                        )
+                        logger.info("#" * 120)
+                        # NOTE: debug ends
+
                         if publish_time < self.since_time:
                             return weibos, weibo_id_list, False
                         logger.info(weibo)
