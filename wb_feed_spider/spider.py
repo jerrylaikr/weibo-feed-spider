@@ -149,7 +149,7 @@ class Spider:
 
     def get_feed(self):
         """Start fetching weibos posted aft last refresh from my feed"""
-        ## Adapted based on Spider.get_one_user()
+        ## Adapted based on combination of Spider.get_one_user() and Spider.start()
         try:
             logger.info(
                 "Start fetching weibos posted after"
@@ -200,7 +200,7 @@ def main():
 
         while True:
             wb.sleep()  # update time_since and sleep for refresh interval
-            wb.run()  # start running
+            wb.get_feed()  # start running
 
     except Exception as e:
         logger.exception(e)
