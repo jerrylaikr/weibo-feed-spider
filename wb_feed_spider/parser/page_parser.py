@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 import logging
 import re
 import sys
-from weibo_spider import datetime_util
-from weibo_spider.parser.mblog_picAll_parser import MblogPicAllParser
-from weibo_spider.weibo import Weibo
-from weibo_spider.parser.parser import Parser
-from weibo_spider.parser.util import handle_html, handle_garbled, to_video_download_url
-from weibo_spider.parser.comment_parser import CommentParser
+from .. import datetime_util
+from ..weibo import Weibo
+from .comment_parser import CommentParser
+from .mblog_picAll_parser import MblogPicAllParser
+from .parser import Parser
+from .util import handle_html, handle_garbled, to_video_download_url
 
 logger = logging.getLogger("spider.page_parser")
 

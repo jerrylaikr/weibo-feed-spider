@@ -12,12 +12,11 @@ import time
 from typing import Generator
 
 from tqdm import tqdm
-from weibo_spider.parser import AlbumParser, IndexParser, PhotoParser
-from weibo_spider.downloader import AvatarPictureDownloader
-from weibo_spider.user import User
-from weibo_spider.weibo import Weibo
+from .downloader import AvatarPictureDownloader
+from .user import User
+from .weibo import Weibo
 
-from .parser import PageParser
+from .parser import PageParser, AlbumParser, IndexParser, PhotoParser
 from . import config_util
 
 logging_path = os.path.split(os.path.realpath(__file__))[0] + os.sep + "logging.conf"
