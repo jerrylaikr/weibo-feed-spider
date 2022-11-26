@@ -89,10 +89,20 @@ class PageParser(Parser):
             return True
 
     def get_original_weibo(self, info, weibo_id):
-        """获取原创微博"""
+        """获取原创微博
+        Feed中原创微博的格式：
+            <USER>
+            :<CONTENT>
+            赞[0] 转发[0] 评论[0] 收藏 ...
+        """
         try:
             weibo_content = handle_garbled(info)
-            weibo_content = weibo_content[: weibo_content.rfind("赞")]
+
+            # 过滤 “<USER>:” 与 “赞[0] 转发[0] 评论[0] 收藏 ...” 部分
+            weibo_content = weibo_content[
+                weibo_content.find(":") + 1 : weibo_content.rfind("赞")
+            ]
+
             a_text = info.xpath("div//a/text()")
             if "全文" in a_text:
                 wb_content = CommentParser(self.cookie, weibo_id).get_long_weibo()
@@ -103,13 +113,26 @@ class PageParser(Parser):
             logger.exception(e)
 
     def get_retweet(self, info, weibo_id):
-        """获取转发微博"""
+        """获取转发微博
+        Feed中转发微博的格式：
+            <USER>转发了<USER>的微博:
+            <ORIGINAL_CONTENT>
+            赞[0] 原文转发[0] 原文评论[0]
+            转发理由:
+            <RETWEET_CONTENT>
+            赞[0] 转发[0] 评论[0] 收藏 ...
+        """
         try:
             weibo_content = handle_garbled(info)
+
+            # 过滤 “<USER>转发了<USER>的微博:” 与 “赞[0] 转发[0] 评论[0] 收藏 ...” 部分
             weibo_content = weibo_content[
                 weibo_content.find(":") + 1 : weibo_content.rfind("赞")
             ]
+
+            # 过滤 “赞[0] 原文转发[0] 原文评论[0] 转发理由:” 及之后的部分
             weibo_content = weibo_content[: weibo_content.rfind("赞")]
+
             a_text = info.xpath("div//a/text()")
             if "全文" in a_text:
                 wb_content = CommentParser(self.cookie, weibo_id).get_long_retweet()
