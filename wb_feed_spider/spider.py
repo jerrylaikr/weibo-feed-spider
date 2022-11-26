@@ -120,16 +120,11 @@ class Spider:
     def write_weibo(self, weibos: list[Weibo]):
         """Write weibos to file and/or database"""
         for writer in self.writers:
-            # logger.info(f"实际差点被写入的{writer.user.id = }")
-            writer.user.id = weibos[0].user_id  # NOTE: Temp. fix,
-            ## need to refactor writers later
-
-            # logger.info(f"实际真的被写入的{writer.user.id = }")
             writer.write_weibo(weibos)
         for downloader in self.downloaders:
             downloader.download_files(weibos)
 
-    def write_user(self, user):
+    def write_user(self, user: User):
         """Write user info to file and/or database"""
         for writer in self.writers:
             writer.write_user(user)
