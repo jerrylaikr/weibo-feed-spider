@@ -56,19 +56,19 @@ class Spider:
 
         self.writers = []
         if "csv" in self.write_mode:
-            from weibo_spider.writer import CsvWriter
+            from .writer import CsvWriter
 
             self.writers.append(CsvWriter(self._get_filepath("csv"), self.filter))
         if "txt" in self.write_mode:
-            from weibo_spider.writer import TxtWriter
+            from .writer import TxtWriter
 
             self.writers.append(TxtWriter(self._get_filepath("txt"), self.filter))
         if "json" in self.write_mode:
-            from weibo_spider.writer import JsonWriter
+            from .writer import JsonWriter
 
             self.writers.append(JsonWriter(self._get_filepath("json")))
         if "mongo" in self.write_mode:
-            from weibo_spider.writer import MongoWriter
+            from .writer import MongoWriter
 
             self.writers.append(MongoWriter(self.mongo_config))
         # if "mysql" in self.write_mode:
@@ -86,7 +86,7 @@ class Spider:
 
         self.downloaders = []
         if self.pic_download == 1:
-            from weibo_spider.downloader import (
+            from .downloader import (
                 OriginPictureDownloader,
                 RetweetPictureDownloader,
             )
@@ -103,7 +103,7 @@ class Spider:
                 )
             )
         if self.video_download == 1:
-            from weibo_spider.downloader import VideoDownloader
+            from .downloader import VideoDownloader
 
             self.downloaders.append(
                 VideoDownloader(self._get_filepath("video"), self.file_download_timeout)
